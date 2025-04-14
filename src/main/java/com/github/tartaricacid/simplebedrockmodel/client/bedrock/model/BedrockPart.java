@@ -7,6 +7,8 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Matrix3f;
+import org.joml.Vector3f;
 
 import java.util.Random;
 
@@ -28,6 +30,13 @@ public class BedrockPart {
     private float initRotX;
     private float initRotY;
     private float initRotZ;
+
+    private static final Vector3f[] NORMALS = new Vector3f[6];
+    static {
+        for(int i = 0; i < NORMALS.length; i++) {
+            NORMALS[i] = new Vector3f();
+        }
+    }
 
     public void setPos(float x, float y, float z) {
         this.x = x;
@@ -70,8 +79,15 @@ public class BedrockPart {
     }
 
     private void compile(PoseStack.Pose pose, VertexConsumer consumer, int texU, int texV, float red, float green, float blue, float alpha) {
+        Matrix3f normal = pose.normal();
+        NORMALS[0].set(-normal.m10, -normal.m11, -normal.m12);
+        NORMALS[1].set(normal.m10, normal.m11, normal.m12);
+        NORMALS[2].set(-normal.m20, -normal.m21, -normal.m22);
+        NORMALS[3].set(normal.m20, normal.m21, normal.m22);
+        NORMALS[4].set(-normal.m00, -normal.m01, -normal.m02);
+        NORMALS[5].set(normal.m00, normal.m01, normal.m02);
         for (BedrockCube bedrockCube : this.cubes) {
-            bedrockCube.compile(pose, consumer, texU, texV, red, green, blue, alpha);
+            bedrockCube.compile(pose, NORMALS, consumer, texU, texV, red, green, blue, alpha);
         }
     }
 
