@@ -67,14 +67,8 @@ public class BedrockPart {
 
     public void translateAndRotate(PoseStack poseStack) {
         poseStack.translate((this.x / 16.0F), (this.y / 16.0F), (this.z / 16.0F));
-        if (this.zRot != 0.0F) {
-            poseStack.mulPose(Axis.ZP.rotation(this.zRot));
-        }
-        if (this.yRot != 0.0F) {
-            poseStack.mulPose(Axis.YP.rotation(this.yRot));
-        }
-        if (this.xRot != 0.0F) {
-            poseStack.mulPose(Axis.XP.rotation(this.xRot));
+        if (this.xRot != 0.0F || this.yRot != 0.0F || this.zRot != 0.0F) {
+            poseStack.last().pose().rotateZYX(this.zRot, this.yRot, this.xRot);
         }
     }
 
