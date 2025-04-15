@@ -22,14 +22,6 @@ public interface BedrockCube {
             {VERTEX_X2_Y1_Z2, VERTEX_X2_Y1_Z1, VERTEX_X2_Y2_Z1, VERTEX_X2_Y2_Z2},
             {VERTEX_X1_Y1_Z1, VERTEX_X1_Y1_Z2, VERTEX_X1_Y2_Z2, VERTEX_X1_Y2_Z1},
     };
-    int[][] UV_ORDER = new int[][]{
-            {1, 2, 6, 7},
-            {2, 3, 7, 6},
-            {1, 2, 7, 8},
-            {4, 5, 7, 8},
-            {2, 4, 7, 8},
-            {0, 1, 7, 8}
-    };
 
     /**
      * Compiles the cube's vertices and adds them to the provided vertex consumer

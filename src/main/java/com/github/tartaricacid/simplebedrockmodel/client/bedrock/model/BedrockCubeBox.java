@@ -15,10 +15,27 @@ public class BedrockCubeBox implements BedrockCube {
     final float y;
     final float z;
     final float[] UVS;
+    final int[][] UV_ORDER;
     private static final Vector3f[] VERTICES = new Vector3f[8];
     private static final Vector3f EDGEX = new Vector3f();
     private static final Vector3f EDGEY = new Vector3f();
     private static final Vector3f EDGEZ = new Vector3f();
+    private static final int[][] UV_ORDER_NO_MIRROR = new int[][]{
+            {1, 2, 6, 7},
+            {2, 3, 7, 6},
+            {1, 2, 7, 8},
+            {4, 5, 7, 8},
+            {2, 4, 7, 8},
+            {0, 1, 7, 8}
+    };
+    private static final int[][] UV_ORDER_MIRRORED = new int[][]{
+            {2, 1, 6, 7},
+            {3, 2, 7, 6},
+            {2, 1, 7, 8},
+            {5, 4, 7, 8},
+            {4, 2, 7, 8},
+            {1, 0, 7, 8}
+    };
 
     static {
         for (int i = 0; i < VERTICES.length; i++) {
@@ -58,6 +75,8 @@ public class BedrockCubeBox implements BedrockCube {
         this.UVS[6] = scaleV * texOffY;
         this.UVS[7] = scaleV * (texOffY + dz);
         this.UVS[8] = scaleV * (texOffY + dz + dy);
+
+        this.UV_ORDER = mirror ? UV_ORDER_MIRRORED : UV_ORDER_NO_MIRROR;
     }
 
     private void prepareVertices(Matrix4f pose) {
@@ -81,16 +100,16 @@ public class BedrockCubeBox implements BedrockCube {
 
         for (int i = 0; i < NUM_CUBE_FACES; i++) {
             consumer.vertex(VERTICES[VERTEX_ORDER[i][0]].x, VERTICES[VERTEX_ORDER[i][0]].y, VERTICES[VERTEX_ORDER[i][0]].z,
-                    r, g, b, a, UVS[UV_ORDER[i][1]], UV_ORDER[i][2], texV, texU, NORMALS[i].x, NORMALS[i].y, NORMALS[i].z);
+                    r, g, b, a, UVS[UV_ORDER[i][1]], UVS[UV_ORDER[i][2]], texV, texU, NORMALS[i].x, NORMALS[i].y, NORMALS[i].z);
 
             consumer.vertex(VERTICES[VERTEX_ORDER[i][1]].x, VERTICES[VERTEX_ORDER[i][1]].y, VERTICES[VERTEX_ORDER[i][1]].z,
-                    r, g, b, a, UVS[UV_ORDER[i][0]], UV_ORDER[i][2], texV, texU, NORMALS[i].x, NORMALS[i].y, NORMALS[i].z);
+                    r, g, b, a, UVS[UV_ORDER[i][0]], UVS[UV_ORDER[i][2]], texV, texU, NORMALS[i].x, NORMALS[i].y, NORMALS[i].z);
 
             consumer.vertex(VERTICES[VERTEX_ORDER[i][2]].x, VERTICES[VERTEX_ORDER[i][2]].y, VERTICES[VERTEX_ORDER[i][2]].z,
-                    r, g, b, a, UVS[UV_ORDER[i][0]], UV_ORDER[i][3], texV, texU, NORMALS[i].x, NORMALS[i].y, NORMALS[i].z);
+                    r, g, b, a, UVS[UV_ORDER[i][0]], UVS[UV_ORDER[i][3]], texV, texU, NORMALS[i].x, NORMALS[i].y, NORMALS[i].z);
 
             consumer.vertex(VERTICES[VERTEX_ORDER[i][3]].x, VERTICES[VERTEX_ORDER[i][3]].y, VERTICES[VERTEX_ORDER[i][3]].z,
-                    r, g, b, a, UVS[UV_ORDER[i][1]], UV_ORDER[i][3], texV, texU, NORMALS[i].x, NORMALS[i].y, NORMALS[i].z);
+                    r, g, b, a, UVS[UV_ORDER[i][1]], UVS[UV_ORDER[i][3]], texV, texU, NORMALS[i].x, NORMALS[i].y, NORMALS[i].z);
         }
     }
 
