@@ -7,11 +7,11 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class BedrockCubeBox implements BedrockCube {
-    private static final Vector3f[] VERTICES = new Vector3f[8];
-    private static final Vector3f EDGE_X = new Vector3f();
-    private static final Vector3f EDGE_Y = new Vector3f();
-    private static final Vector3f EDGE_Z = new Vector3f();
-    private static final int[][] UV_ORDER_NO_MIRROR = new int[][]{
+    protected static final Vector3f[] VERTICES = new Vector3f[8];
+    protected static final Vector3f EDGE_X = new Vector3f();
+    protected static final Vector3f EDGE_Y = new Vector3f();
+    protected static final Vector3f EDGE_Z = new Vector3f();
+    protected static final int[][] UV_ORDER_NO_MIRROR = new int[][]{
             {1, 2, 6, 7},
             {2, 3, 7, 6},
             {1, 2, 7, 8},
@@ -19,7 +19,7 @@ public class BedrockCubeBox implements BedrockCube {
             {2, 4, 7, 8},
             {0, 1, 7, 8}
     };
-    private static final int[][] UV_ORDER_MIRRORED = new int[][]{
+    protected static final int[][] UV_ORDER_MIRRORED = new int[][]{
             {2, 1, 6, 7},
             {3, 2, 7, 6},
             {2, 1, 7, 8},
@@ -27,14 +27,14 @@ public class BedrockCubeBox implements BedrockCube {
             {4, 2, 7, 8},
             {1, 0, 7, 8}
     };
-    private final float width;
-    private final float height;
-    private final float depth;
-    private final float x;
-    private final float y;
-    private final float z;
-    private final float[] uvs;
-    private final int[][] uvOrder;
+    protected final float width;
+    protected final float height;
+    protected final float depth;
+    protected final float x;
+    protected final float y;
+    protected final float z;
+    protected final float[] uvs;
+    protected final int[][] uvOrder;
 
     static {
         for (int i = 0; i < VERTICES.length; i++) {
@@ -78,7 +78,7 @@ public class BedrockCubeBox implements BedrockCube {
         this.uvOrder = mirror ? UV_ORDER_MIRRORED : UV_ORDER_NO_MIRROR;
     }
 
-    private void prepareVertices(Matrix4f pose) {
+    protected void prepareVertices(Matrix4f pose) {
         EDGE_X.set(pose.m00(), pose.m01(), pose.m02()).mul(width);
         EDGE_Y.set(pose.m10(), pose.m11(), pose.m12()).mul(height);
         EDGE_Z.set(pose.m20(), pose.m21(), pose.m22()).mul(depth);

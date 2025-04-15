@@ -50,10 +50,16 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+    mavenLocal()
+    maven {
+        url = "https://api.modrinth.com/maven"
+    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    runtimeOnly fg.deobf("maven.modrinth:embeddium:0.3.31+mc1.20.1")
+    compileOnly fg.deobf("maven.modrinth:embeddium:0.3.31+mc1.20.1")
 }
 
 tasks.named('processResources', ProcessResources).configure {

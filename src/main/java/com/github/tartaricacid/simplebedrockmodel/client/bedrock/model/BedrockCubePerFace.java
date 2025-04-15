@@ -10,17 +10,17 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class BedrockCubePerFace implements BedrockCube {
-    private static final Vector3f[] VERTICES = new Vector3f[8];
-    private static final Vector3f EDGE_X = new Vector3f();
-    private static final Vector3f EDGE_Y = new Vector3f();
-    private static final Vector3f EDGE_Z = new Vector3f();
-    private final float width;
-    private final float height;
-    private final float depth;
-    private final float x;
-    private final float y;
-    private final float z;
-    private final float[][] uvs = new float[6][4];
+    protected static final Vector3f[] VERTICES = new Vector3f[8];
+    protected static final Vector3f EDGE_X = new Vector3f();
+    protected static final Vector3f EDGE_Y = new Vector3f();
+    protected static final Vector3f EDGE_Z = new Vector3f();
+    protected final float width;
+    protected final float height;
+    protected final float depth;
+    protected final float x;
+    protected final float y;
+    protected final float z;
+    protected final float[][] uvs = new float[6][4];
 
     static {
         for (int i = 0; i < VERTICES.length; i++) {
@@ -49,7 +49,7 @@ public class BedrockCubePerFace implements BedrockCube {
         uvs[direction.ordinal()][3] = (face.getUv()[1] + face.getUvSize()[1]) / texHeight;
     }
 
-    private void prepareVertices(Matrix4f pose) {
+    protected void prepareVertices(Matrix4f pose) {
         EDGE_X.set(pose.m00(), pose.m01(), pose.m02()).mul(width);
         EDGE_Y.set(pose.m10(), pose.m11(), pose.m12()).mul(height);
         EDGE_Z.set(pose.m20(), pose.m21(), pose.m22()).mul(depth);

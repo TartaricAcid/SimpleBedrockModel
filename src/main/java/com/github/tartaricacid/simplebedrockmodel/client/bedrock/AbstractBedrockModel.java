@@ -1,10 +1,14 @@
 package com.github.tartaricacid.simplebedrockmodel.client.bedrock;
 
+import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockCube;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockCubeBox;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockCubePerFace;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.pojo.BedrockVersion;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.pojo.*;
+import com.github.tartaricacid.simplebedrockmodel.client.compat.Sodium.SodiumBedrockCubeBox;
+import com.github.tartaricacid.simplebedrockmodel.client.compat.Sodium.SodiumBedrockCubePerFace;
+import com.github.tartaricacid.simplebedrockmodel.client.compat.Sodium.SodiumCompat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
@@ -66,6 +70,22 @@ public abstract class AbstractBedrockModel<T extends Entity> extends EntityModel
     public AbstractBedrockModel() {
         super(RenderType::entityCutoutNoCull);
         renderBoundingBox = new AABB(-1, 0, -1, 1, 2, 1);
+    }
+
+    public BedrockCube createCubeBox(float texOffX, float texOffY, float x, float y, float z, float width, float height, float depth,
+                                     float delta, boolean mirror, float texWidth, float texHeight) {
+        if (SodiumCompat.isSodiumInstalled()) {
+            return new SodiumBedrockCubeBox(texOffX, texOffY, x, y, z, width, height, depth, delta, mirror, texWidth, texHeight);
+        }
+        return new BedrockCubeBox(texOffX, texOffY, x, y, z, width, height, depth, delta, mirror, texWidth, texHeight);
+    }
+
+    public BedrockCube createCubePerFace(float x, float y, float z, float width, float height, float depth, float delta,
+                                         float texWidth, float texHeight, FaceUVsItem faces) {
+        if (SodiumCompat.isSodiumInstalled()) {
+            return new SodiumBedrockCubePerFace(x, y, z, width, height, depth, delta, texWidth, texHeight, faces);
+        }
+        return new BedrockCubePerFace(x, y, z, width, height, depth, delta, texWidth, texHeight, faces);
     }
 
     protected void loadNewModel(BedrockModelPOJO pojo) {
@@ -141,12 +161,12 @@ public abstract class AbstractBedrockModel<T extends Entity> extends EntityModel
                 // 当做普通 cube 存入
                 if (cubeRotation == null) {
                     if (faceUv == null) {
-                        model.cubes.add(new BedrockCubeBox(uv[0], uv[1],
+                        model.cubes.add(createCubeBox(uv[0], uv[1],
                                 convertOrigin(bones, cube, 0), convertOrigin(bones, cube, 1), convertOrigin(bones, cube, 2),
                                 size[0], size[1], size[2], inflate, mirror,
                                 texWidth, texHeight));
                     } else {
-                        model.cubes.add(new BedrockCubePerFace(
+                        model.cubes.add(createCubePerFace(
                                 convertOrigin(bones, cube, 0), convertOrigin(bones, cube, 1), convertOrigin(bones, cube, 2),
                                 size[0], size[1], size[2], inflate,
                                 texWidth, texHeight, faceUv));
@@ -158,12 +178,12 @@ public abstract class AbstractBedrockModel<T extends Entity> extends EntityModel
                     cubeRenderer.setPos(convertPivot(bones, cube, 0), convertPivot(bones, cube, 1), convertPivot(bones, cube, 2));
                     setRotationAngle(cubeRenderer, convertRotation(cubeRotation[0]), convertRotation(cubeRotation[1]), convertRotation(cubeRotation[2]));
                     if (faceUv == null) {
-                        cubeRenderer.cubes.add(new BedrockCubeBox(uv[0], uv[1],
+                        cubeRenderer.cubes.add(createCubeBox(uv[0], uv[1],
                                 convertOrigin(cube, 0), convertOrigin(cube, 1), convertOrigin(cube, 2),
                                 size[0], size[1], size[2], inflate, mirror,
                                 texWidth, texHeight));
                     } else {
-                        cubeRenderer.cubes.add(new BedrockCubePerFace(
+                        cubeRenderer.cubes.add(createCubePerFace(
                                 convertOrigin(cube, 0), convertOrigin(cube, 1), convertOrigin(cube, 2),
                                 size[0], size[1], size[2], inflate,
                                 texWidth, texHeight, faceUv));
