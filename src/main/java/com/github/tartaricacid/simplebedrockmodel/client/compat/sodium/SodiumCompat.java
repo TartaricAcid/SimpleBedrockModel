@@ -1,4 +1,4 @@
-package com.github.tartaricacid.simplebedrockmodel.client.compat.Sodium;
+package com.github.tartaricacid.simplebedrockmodel.client.compat.sodium;
 
 import net.minecraftforge.fml.ModList;
 

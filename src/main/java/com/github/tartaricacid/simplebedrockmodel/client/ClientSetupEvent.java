@@ -1,6 +1,7 @@
-package com.github.tartaricacid.simplebedrockmodel;
+package com.github.tartaricacid.simplebedrockmodel.client;
 
-import com.github.tartaricacid.simplebedrockmodel.client.compat.Sodium.SodiumCompat;
+import com.github.tartaricacid.simplebedrockmodel.SimpleBedrockModel;
+import com.github.tartaricacid.simplebedrockmodel.client.compat.sodium.SodiumCompat;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

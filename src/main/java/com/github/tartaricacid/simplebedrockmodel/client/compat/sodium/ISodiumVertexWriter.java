@@ -1,4 +1,4 @@
-package com.github.tartaricacid.simplebedrockmodel.client.compat.Sodium;
+package com.github.tartaricacid.simplebedrockmodel.client.compat.sodium;
 
 import net.caffeinemc.mods.sodium.api.vertex.buffer.VertexBufferWriter;
 import net.caffeinemc.mods.sodium.api.vertex.format.common.ModelVertex;

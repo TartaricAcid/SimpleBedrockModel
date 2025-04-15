@@ -4,11 +4,10 @@ import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockCu
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockCubeBox;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockCubePerFace;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
-import com.github.tartaricacid.simplebedrockmodel.client.bedrock.pojo.BedrockVersion;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.pojo.*;
-import com.github.tartaricacid.simplebedrockmodel.client.compat.Sodium.SodiumBedrockCubeBox;
-import com.github.tartaricacid.simplebedrockmodel.client.compat.Sodium.SodiumBedrockCubePerFace;
-import com.github.tartaricacid.simplebedrockmodel.client.compat.Sodium.SodiumCompat;
+import com.github.tartaricacid.simplebedrockmodel.client.compat.sodium.SodiumBedrockCubeBox;
+import com.github.tartaricacid.simplebedrockmodel.client.compat.sodium.SodiumBedrockCubePerFace;
+import com.github.tartaricacid.simplebedrockmodel.client.compat.sodium.SodiumCompat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
@@ -70,22 +69,6 @@ public abstract class AbstractBedrockModel<T extends Entity> extends EntityModel
     public AbstractBedrockModel() {
         super(RenderType::entityCutoutNoCull);
         renderBoundingBox = new AABB(-1, 0, -1, 1, 2, 1);
-    }
-
-    public BedrockCube createCubeBox(float texOffX, float texOffY, float x, float y, float z, float width, float height, float depth,
-                                     float delta, boolean mirror, float texWidth, float texHeight) {
-        if (SodiumCompat.isSodiumInstalled()) {
-            return new SodiumBedrockCubeBox(texOffX, texOffY, x, y, z, width, height, depth, delta, mirror, texWidth, texHeight);
-        }
-        return new BedrockCubeBox(texOffX, texOffY, x, y, z, width, height, depth, delta, mirror, texWidth, texHeight);
-    }
-
-    public BedrockCube createCubePerFace(float x, float y, float z, float width, float height, float depth, float delta,
-                                         float texWidth, float texHeight, FaceUVsItem faces) {
-        if (SodiumCompat.isSodiumInstalled()) {
-            return new SodiumBedrockCubePerFace(x, y, z, width, height, depth, delta, texWidth, texHeight, faces);
-        }
-        return new BedrockCubePerFace(x, y, z, width, height, depth, delta, texWidth, texHeight, faces);
     }
 
     protected void loadNewModel(BedrockModelPOJO pojo) {
@@ -269,6 +252,22 @@ public abstract class AbstractBedrockModel<T extends Entity> extends EntityModel
                         texWidth, texHeight));
             }
         }
+    }
+
+    protected BedrockCube createCubeBox(float texOffX, float texOffY, float x, float y, float z, float width, float height, float depth,
+                                        float delta, boolean mirror, float texWidth, float texHeight) {
+        if (SodiumCompat.isSodiumInstalled()) {
+            return new SodiumBedrockCubeBox(texOffX, texOffY, x, y, z, width, height, depth, delta, mirror, texWidth, texHeight);
+        }
+        return new BedrockCubeBox(texOffX, texOffY, x, y, z, width, height, depth, delta, mirror, texWidth, texHeight);
+    }
+
+    protected BedrockCube createCubePerFace(float x, float y, float z, float width, float height, float depth, float delta,
+                                            float texWidth, float texHeight, FaceUVsItem faces) {
+        if (SodiumCompat.isSodiumInstalled()) {
+            return new SodiumBedrockCubePerFace(x, y, z, width, height, depth, delta, texWidth, texHeight, faces);
+        }
+        return new BedrockCubePerFace(x, y, z, width, height, depth, delta, texWidth, texHeight, faces);
     }
 
     @Override

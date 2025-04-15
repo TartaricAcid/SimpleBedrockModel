@@ -1,4 +1,4 @@
-package com.github.tartaricacid.simplebedrockmodel.client.compat.Sodium;
+package com.github.tartaricacid.simplebedrockmodel.client.compat.sodium;
 
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockCubePerFace;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.pojo.FaceUVsItem;
