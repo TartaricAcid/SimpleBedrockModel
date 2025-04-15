@@ -14,6 +14,7 @@ import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public class BedrockPart {
+    private static final Vector3f[] NORMALS = new Vector3f[6];
     public final ObjectList<BedrockCube> cubes = new ObjectArrayList<>();
     private final ObjectList<BedrockPart> children = new ObjectArrayList<>();
     public float x;
@@ -31,9 +32,8 @@ public class BedrockPart {
     private float initRotY;
     private float initRotZ;
 
-    private static final Vector3f[] NORMALS = new Vector3f[6];
     static {
-        for(int i = 0; i < NORMALS.length; i++) {
+        for (int i = 0; i < NORMALS.length; i++) {
             NORMALS[i] = new Vector3f();
         }
     }

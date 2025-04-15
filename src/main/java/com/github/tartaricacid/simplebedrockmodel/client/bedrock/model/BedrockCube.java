@@ -37,14 +37,5 @@ public interface BedrockCube {
      * @param blue     the blue color component (0.0 to 1.0)
      * @param alpha    the alpha (transparency) component (0.0 to 1.0)
      */
-    void compile(PoseStack.Pose pose, Vector3f[] NORMALS, VertexConsumer consumer, int texU, int texV, float red, float green, float blue, float alpha);
-
-    /**
-     * Get bedrock polygon data for the bedrock model
-     * <p>
-     * 获取基岩版模型的顶点数据
-     *
-     * @return an array of {@link BedrockPolygon} representing the polygons of the cube
-     */
-    BedrockPolygon[] getPolygons();
+    void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int texU, int texV, float red, float green, float blue, float alpha);
 }

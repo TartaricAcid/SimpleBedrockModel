@@ -3,23 +3,14 @@ package com.github.tartaricacid.simplebedrockmodel.client.bedrock.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.util.Mth;
-import org.apache.commons.lang3.NotImplementedException;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class BedrockCubeBox implements BedrockCube {
-    final float width;
-    final float height;
-    final float depth;
-    final float x;
-    final float y;
-    final float z;
-    final float[] UVS;
-    final int[][] UV_ORDER;
     private static final Vector3f[] VERTICES = new Vector3f[8];
-    private static final Vector3f EDGEX = new Vector3f();
-    private static final Vector3f EDGEY = new Vector3f();
-    private static final Vector3f EDGEZ = new Vector3f();
+    private static final Vector3f EDGE_X = new Vector3f();
+    private static final Vector3f EDGE_Y = new Vector3f();
+    private static final Vector3f EDGE_Z = new Vector3f();
     private static final int[][] UV_ORDER_NO_MIRROR = new int[][]{
             {1, 2, 6, 7},
             {2, 3, 7, 6},
@@ -36,6 +27,14 @@ public class BedrockCubeBox implements BedrockCube {
             {4, 2, 7, 8},
             {1, 0, 7, 8}
     };
+    private final float width;
+    private final float height;
+    private final float depth;
+    private final float x;
+    private final float y;
+    private final float z;
+    private final float[] uvs;
+    private final int[][] uvOrder;
 
     static {
         for (int i = 0; i < VERTICES.length; i++) {
@@ -65,56 +64,51 @@ public class BedrockCubeBox implements BedrockCube {
         float scaleU = 1.0f / texWidth;
         float scaleV = 1.0f / texHeight;
 
-        this.UVS = new float[9];
-        this.UVS[0] = scaleU * texOffX;
-        this.UVS[1] = scaleU * (texOffX + dz);
-        this.UVS[2] = scaleU * (texOffX + dz + dx);
-        this.UVS[3] = scaleU * (texOffX + dz + dx + dx);
-        this.UVS[4] = scaleU * (texOffX + dz + dx + dz);
-        this.UVS[5] = scaleU * (texOffX + dz + dx + dz + dx);
-        this.UVS[6] = scaleV * texOffY;
-        this.UVS[7] = scaleV * (texOffY + dz);
-        this.UVS[8] = scaleV * (texOffY + dz + dy);
+        this.uvs = new float[9];
+        this.uvs[0] = scaleU * texOffX;
+        this.uvs[1] = scaleU * (texOffX + dz);
+        this.uvs[2] = scaleU * (texOffX + dz + dx);
+        this.uvs[3] = scaleU * (texOffX + dz + dx + dx);
+        this.uvs[4] = scaleU * (texOffX + dz + dx + dz);
+        this.uvs[5] = scaleU * (texOffX + dz + dx + dz + dx);
+        this.uvs[6] = scaleV * texOffY;
+        this.uvs[7] = scaleV * (texOffY + dz);
+        this.uvs[8] = scaleV * (texOffY + dz + dy);
 
-        this.UV_ORDER = mirror ? UV_ORDER_MIRRORED : UV_ORDER_NO_MIRROR;
+        this.uvOrder = mirror ? UV_ORDER_MIRRORED : UV_ORDER_NO_MIRROR;
     }
 
     private void prepareVertices(Matrix4f pose) {
-        EDGEX.set(pose.m00(), pose.m01(), pose.m02()).mul(width);
-        EDGEY.set(pose.m10(), pose.m11(), pose.m12()).mul(height);
-        EDGEZ.set(pose.m20(), pose.m21(), pose.m22()).mul(depth);
+        EDGE_X.set(pose.m00(), pose.m01(), pose.m02()).mul(width);
+        EDGE_Y.set(pose.m10(), pose.m11(), pose.m12()).mul(height);
+        EDGE_Z.set(pose.m20(), pose.m21(), pose.m22()).mul(depth);
         VERTICES[VERTEX_X1_Y1_Z1].set(x, y, z).mulPosition(pose);
-        VERTICES[VERTEX_X1_Y1_Z1].add(EDGEX, VERTICES[VERTEX_X2_Y1_Z1]);
-        VERTICES[VERTEX_X2_Y1_Z1].add(EDGEY, VERTICES[VERTEX_X2_Y2_Z1]);
-        VERTICES[VERTEX_X1_Y1_Z1].add(EDGEY, VERTICES[VERTEX_X1_Y2_Z1]);
-        VERTICES[VERTEX_X1_Y1_Z1].add(EDGEZ, VERTICES[VERTEX_X1_Y1_Z2]);
-        VERTICES[VERTEX_X2_Y1_Z1].add(EDGEZ, VERTICES[VERTEX_X2_Y1_Z2]);
-        VERTICES[VERTEX_X2_Y2_Z1].add(EDGEZ, VERTICES[VERTEX_X2_Y2_Z2]);
-        VERTICES[VERTEX_X1_Y2_Z1].add(EDGEZ, VERTICES[VERTEX_X1_Y2_Z2]);
+        VERTICES[VERTEX_X1_Y1_Z1].add(EDGE_X, VERTICES[VERTEX_X2_Y1_Z1]);
+        VERTICES[VERTEX_X2_Y1_Z1].add(EDGE_Y, VERTICES[VERTEX_X2_Y2_Z1]);
+        VERTICES[VERTEX_X1_Y1_Z1].add(EDGE_Y, VERTICES[VERTEX_X1_Y2_Z1]);
+        VERTICES[VERTEX_X1_Y1_Z1].add(EDGE_Z, VERTICES[VERTEX_X1_Y1_Z2]);
+        VERTICES[VERTEX_X2_Y1_Z1].add(EDGE_Z, VERTICES[VERTEX_X2_Y1_Z2]);
+        VERTICES[VERTEX_X2_Y2_Z1].add(EDGE_Z, VERTICES[VERTEX_X2_Y2_Z2]);
+        VERTICES[VERTEX_X1_Y2_Z1].add(EDGE_Z, VERTICES[VERTEX_X1_Y2_Z2]);
     }
 
     @Override
-    public void compile(PoseStack.Pose pose, Vector3f[] NORMALS, VertexConsumer consumer, int texU, int texV, float r, float g, float b, float a) {
+    public void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int texU, int texV, float r, float g, float b, float a) {
         Matrix4f matrix4f = pose.pose();
         prepareVertices(matrix4f);
 
         for (int i = 0; i < NUM_CUBE_FACES; i++) {
             consumer.vertex(VERTICES[VERTEX_ORDER[i][0]].x, VERTICES[VERTEX_ORDER[i][0]].y, VERTICES[VERTEX_ORDER[i][0]].z,
-                    r, g, b, a, UVS[UV_ORDER[i][1]], UVS[UV_ORDER[i][2]], texV, texU, NORMALS[i].x, NORMALS[i].y, NORMALS[i].z);
+                    r, g, b, a, uvs[uvOrder[i][1]], uvs[uvOrder[i][2]], texV, texU, normals[i].x, normals[i].y, normals[i].z);
 
             consumer.vertex(VERTICES[VERTEX_ORDER[i][1]].x, VERTICES[VERTEX_ORDER[i][1]].y, VERTICES[VERTEX_ORDER[i][1]].z,
-                    r, g, b, a, UVS[UV_ORDER[i][0]], UVS[UV_ORDER[i][2]], texV, texU, NORMALS[i].x, NORMALS[i].y, NORMALS[i].z);
+                    r, g, b, a, uvs[uvOrder[i][0]], uvs[uvOrder[i][2]], texV, texU, normals[i].x, normals[i].y, normals[i].z);
 
             consumer.vertex(VERTICES[VERTEX_ORDER[i][2]].x, VERTICES[VERTEX_ORDER[i][2]].y, VERTICES[VERTEX_ORDER[i][2]].z,
-                    r, g, b, a, UVS[UV_ORDER[i][0]], UVS[UV_ORDER[i][3]], texV, texU, NORMALS[i].x, NORMALS[i].y, NORMALS[i].z);
+                    r, g, b, a, uvs[uvOrder[i][0]], uvs[uvOrder[i][3]], texV, texU, normals[i].x, normals[i].y, normals[i].z);
 
             consumer.vertex(VERTICES[VERTEX_ORDER[i][3]].x, VERTICES[VERTEX_ORDER[i][3]].y, VERTICES[VERTEX_ORDER[i][3]].z,
-                    r, g, b, a, UVS[UV_ORDER[i][1]], UVS[UV_ORDER[i][3]], texV, texU, NORMALS[i].x, NORMALS[i].y, NORMALS[i].z);
+                    r, g, b, a, uvs[uvOrder[i][1]], uvs[uvOrder[i][3]], texV, texU, normals[i].x, normals[i].y, normals[i].z);
         }
-    }
-
-    @Override
-    public BedrockPolygon[] getPolygons() {
-        throw new NotImplementedException("getPolygons");
     }
 }
