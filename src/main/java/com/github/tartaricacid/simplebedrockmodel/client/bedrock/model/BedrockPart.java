@@ -69,6 +69,7 @@ public class BedrockPart {
         poseStack.translate((this.x / 16.0F), (this.y / 16.0F), (this.z / 16.0F));
         if (this.xRot != 0.0F || this.yRot != 0.0F || this.zRot != 0.0F) {
             poseStack.last().pose().rotateZYX(this.zRot, this.yRot, this.xRot);
+            poseStack.last().normal().rotateZYX(this.zRot, this.yRot, this.xRot);
         }
     }
 
