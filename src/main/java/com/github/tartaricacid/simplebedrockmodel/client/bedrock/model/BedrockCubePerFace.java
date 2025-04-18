@@ -1,92 +1,95 @@
 package com.github.tartaricacid.simplebedrockmodel.client.bedrock.model;
 
-
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.pojo.FaceItem;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.pojo.FaceUVsItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 import net.minecraft.core.Direction;
 
-import static com.github.tartaricacid.simplebedrockmodel.client.bedrock.BedrockModelUtil.add;
-import static com.github.tartaricacid.simplebedrockmodel.client.bedrock.BedrockModelUtil.mulPosition;
-
 public class BedrockCubePerFace implements BedrockCube {
-    protected static final Vector3f[] VERTICES = new Vector3f[8];
-    protected static final Vector3f EDGE_X = new Vector3f();
-    protected static final Vector3f EDGE_Y = new Vector3f();
-    protected static final Vector3f EDGE_Z = new Vector3f();
-    protected final float width;
-    protected final float height;
-    protected final float depth;
-    protected final float x;
-    protected final float y;
-    protected final float z;
-    protected final float[][] uvs = new float[6][4];
-
-    static {
-        for (int i = 0; i < VERTICES.length; i++) {
-            VERTICES[i] = new Vector3f();
-        }
-    }
+    public final float minX;
+    public final float minY;
+    public final float minZ;
+    public final float maxX;
+    public final float maxY;
+    public final float maxZ;
+    private final BedrockPolygon[] polygons;
 
     public BedrockCubePerFace(float x, float y, float z, float width, float height, float depth, float delta, float texWidth, float texHeight, FaceUVsItem faces) {
-        this.x = (x - delta) / 16.0f;
-        this.y = (y - delta) / 16.0f;
-        this.z = (z - delta) / 16.0f;
-        this.width = (width + delta * 2) / 16.0f;
-        this.height = (height + delta * 2) / 16.0f;
-        this.depth = (depth + delta * 2) / 16.0f;
+        this.minX = x;
+        this.minY = y;
+        this.minZ = z;
+        this.maxX = x + width;
+        this.maxY = y + height;
+        this.maxZ = z + depth;
+        this.polygons = new BedrockPolygon[6];
 
-        for (Direction direction : Direction.values()) {
-            fillUV(direction, faces, texWidth, texHeight);
-        }
+        float xEnd = x + width;
+        float yEnd = y + height;
+        float zEnd = z + depth;
+        x = x - delta;
+        y = y - delta;
+        z = z - delta;
+        xEnd = xEnd + delta;
+        yEnd = yEnd + delta;
+        zEnd = zEnd + delta;
+
+        BedrockVertex vertex1 = new BedrockVertex(x, y, z, 0.0F, 0.0F);
+        BedrockVertex vertex2 = new BedrockVertex(xEnd, y, z, 0.0F, 8.0F);
+        BedrockVertex vertex3 = new BedrockVertex(xEnd, yEnd, z, 8.0F, 8.0F);
+        BedrockVertex vertex4 = new BedrockVertex(x, yEnd, z, 8.0F, 0.0F);
+        BedrockVertex vertex5 = new BedrockVertex(x, y, zEnd, 0.0F, 0.0F);
+        BedrockVertex vertex6 = new BedrockVertex(xEnd, y, zEnd, 0.0F, 8.0F);
+        BedrockVertex vertex7 = new BedrockVertex(xEnd, yEnd, zEnd, 8.0F, 8.0F);
+        BedrockVertex vertex8 = new BedrockVertex(x, yEnd, zEnd, 8.0F, 0.0F);
+
+        this.polygons[2] = getTexturedQuad(new BedrockVertex[]{vertex6, vertex5, vertex1, vertex2}, texWidth, texHeight, Direction.DOWN, faces);
+        this.polygons[3] = getTexturedQuad(new BedrockVertex[]{vertex3, vertex4, vertex8, vertex7}, texWidth, texHeight, Direction.UP, faces);
+        this.polygons[1] = getTexturedQuad(new BedrockVertex[]{vertex1, vertex5, vertex8, vertex4}, texWidth, texHeight, Direction.WEST, faces);
+        this.polygons[4] = getTexturedQuad(new BedrockVertex[]{vertex2, vertex1, vertex4, vertex3}, texWidth, texHeight, Direction.NORTH, faces);
+        this.polygons[0] = getTexturedQuad(new BedrockVertex[]{vertex6, vertex2, vertex3, vertex7}, texWidth, texHeight, Direction.EAST, faces);
+        this.polygons[5] = getTexturedQuad(new BedrockVertex[]{vertex5, vertex6, vertex7, vertex8}, texWidth, texHeight, Direction.SOUTH, faces);
     }
 
-    private void fillUV(Direction direction, FaceUVsItem faces, float texWidth, float texHeight) {
+    private BedrockPolygon getTexturedQuad(BedrockVertex[] positionsIn, float texWidth, float texHeight, Direction direction, FaceUVsItem faces) {
         FaceItem face = faces.getFace(direction);
-        uvs[direction.ordinal()][0] = face.getUv()[0] / texWidth;
-        uvs[direction.ordinal()][1] = (face.getUv()[0] + face.getUvSize()[0]) / texWidth;
-        uvs[direction.ordinal()][2] = face.getUv()[1] / texHeight;
-        uvs[direction.ordinal()][3] = (face.getUv()[1] + face.getUvSize()[1]) / texHeight;
+        float u1 = face.getUv()[0];
+        float v1 = face.getUv()[1];
+        float u2 = u1 + face.getUvSize()[0];
+        float v2 = v1 + face.getUvSize()[1];
+        return new BedrockPolygon(positionsIn, u1, v1, u2, v2, texWidth, texHeight, false, direction);
     }
 
-    protected void prepareVertices(Matrix4f pose) {
-        EDGE_X.set(pose.m00, pose.m01, pose.m02);
-        EDGE_X.mul(width);
-        EDGE_Y.set(pose.m10, pose.m11, pose.m12);
-        EDGE_Y.mul(height);
-        EDGE_Z.set(pose.m20, pose.m21, pose.m22);
-        EDGE_Z.mul(depth);
-        VERTICES[VERTEX_X1_Y1_Z1].set(x, y, z);
-        mulPosition(VERTICES[VERTEX_X1_Y1_Z1], pose);
-        add(VERTICES[VERTEX_X1_Y1_Z1], EDGE_X, VERTICES[VERTEX_X2_Y1_Z1]);
-        add(VERTICES[VERTEX_X2_Y1_Z1], EDGE_Y, VERTICES[VERTEX_X2_Y2_Z1]);
-        add(VERTICES[VERTEX_X1_Y1_Z1], EDGE_Y, VERTICES[VERTEX_X1_Y2_Z1]);
-        add(VERTICES[VERTEX_X1_Y1_Z1], EDGE_Z, VERTICES[VERTEX_X1_Y1_Z2]);
-        add(VERTICES[VERTEX_X2_Y1_Z1], EDGE_Z, VERTICES[VERTEX_X2_Y1_Z2]);
-        add(VERTICES[VERTEX_X2_Y2_Z1], EDGE_Z, VERTICES[VERTEX_X2_Y2_Z2]);
-        add(VERTICES[VERTEX_X1_Y2_Z1], EDGE_Z, VERTICES[VERTEX_X1_Y2_Z2]);
+
+    @Override
+    public void compile(PoseStack.Pose pose, VertexConsumer consumer, int texU, int texV, float red, float green, float blue, float alpha) {
+        Matrix4f matrix4f = pose.pose();
+        Matrix3f matrix3f = pose.normal();
+
+        for (BedrockPolygon polygon : this.polygons) {
+            Vector3f vector3f = polygon.normal.copy();
+            vector3f.transform(matrix3f);
+            float nx = vector3f.x();
+            float ny = vector3f.y();
+            float nz = vector3f.z();
+
+            for (BedrockVertex vertex : polygon.vertices) {
+                float x = vertex.pos.x() / 16.0F;
+                float y = vertex.pos.y() / 16.0F;
+                float z = vertex.pos.z() / 16.0F;
+                Vector4f vector4f = new Vector4f(x, y, z, 1.0F);
+                vector4f.transform(matrix4f);
+                consumer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), red, green, blue, alpha, vertex.u, vertex.v, texV, texU, nx, ny, nz);
+            }
+        }
     }
 
     @Override
-    public void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int texU, int texV, float r, float g, float b, float a) {
-        Matrix4f matrix4f = pose.pose();
-        prepareVertices(matrix4f);
-
-        for (int i = 0; i < NUM_CUBE_FACES; i++) {
-            consumer.vertex(VERTICES[VERTEX_ORDER[i][0]].x, VERTICES[VERTEX_ORDER[i][0]].y, VERTICES[VERTEX_ORDER[i][0]].z,
-                    r, g, b, a, uvs[i][1], uvs[i][2], texV, texU, normals[i].x, normals[i].y, normals[i].z);
-
-            consumer.vertex(VERTICES[VERTEX_ORDER[i][1]].x, VERTICES[VERTEX_ORDER[i][1]].y, VERTICES[VERTEX_ORDER[i][1]].z,
-                    r, g, b, a, uvs[i][0], uvs[i][2], texV, texU, normals[i].x, normals[i].y, normals[i].z);
-
-            consumer.vertex(VERTICES[VERTEX_ORDER[i][2]].x, VERTICES[VERTEX_ORDER[i][2]].y, VERTICES[VERTEX_ORDER[i][2]].z,
-                    r, g, b, a, uvs[i][0], uvs[i][3], texV, texU, normals[i].x, normals[i].y, normals[i].z);
-
-            consumer.vertex(VERTICES[VERTEX_ORDER[i][3]].x, VERTICES[VERTEX_ORDER[i][3]].y, VERTICES[VERTEX_ORDER[i][3]].z,
-                    r, g, b, a, uvs[i][1], uvs[i][3], texV, texU, normals[i].x, normals[i].y, normals[i].z);
-        }
+    public BedrockPolygon[] getPolygons() {
+        return polygons;
     }
 }

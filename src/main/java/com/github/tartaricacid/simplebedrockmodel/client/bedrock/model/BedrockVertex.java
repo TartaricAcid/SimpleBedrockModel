@@ -1,6 +1,5 @@
 package com.github.tartaricacid.simplebedrockmodel.client.bedrock.model;
 
-
 import com.mojang.math.Vector3f;
 
 public class BedrockVertex {
