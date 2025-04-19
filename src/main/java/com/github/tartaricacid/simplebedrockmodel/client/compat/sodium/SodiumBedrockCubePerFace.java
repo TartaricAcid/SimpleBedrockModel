@@ -34,17 +34,14 @@ public class SodiumBedrockCubePerFace extends BedrockCubePerFace implements ISod
             emitVertex(ptr, VERTICES[VERTEX_ORDER[i][0]].x, VERTICES[VERTEX_ORDER[i][0]].y, VERTICES[VERTEX_ORDER[i][0]].z,
                     color, uvs[i][1], uvs[i][2], texV, texU, NORMALS[i]);
             ptr += STRIDE;
-            vertexCount += 4;
 
             emitVertex(ptr, VERTICES[VERTEX_ORDER[i][1]].x, VERTICES[VERTEX_ORDER[i][1]].y, VERTICES[VERTEX_ORDER[i][1]].z,
                     color, uvs[i][0], uvs[i][2], texV, texU, NORMALS[i]);
             ptr += STRIDE;
-            vertexCount += 4;
 
             emitVertex(ptr, VERTICES[VERTEX_ORDER[i][2]].x, VERTICES[VERTEX_ORDER[i][2]].y, VERTICES[VERTEX_ORDER[i][2]].z,
                     color, uvs[i][0], uvs[i][3], texV, texU, NORMALS[i]);
             ptr += STRIDE;
-            vertexCount += 4;
 
             emitVertex(ptr, VERTICES[VERTEX_ORDER[i][3]].x, VERTICES[VERTEX_ORDER[i][3]].y, VERTICES[VERTEX_ORDER[i][3]].z,
                     color, uvs[i][1], uvs[i][3], texV, texU, NORMALS[i]);
