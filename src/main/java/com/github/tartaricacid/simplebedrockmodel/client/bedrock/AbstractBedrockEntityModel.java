@@ -10,8 +10,9 @@ import com.github.tartaricacid.simplebedrockmodel.client.compat.sodium.SodiumBed
 import com.github.tartaricacid.simplebedrockmodel.client.compat.sodium.SodiumCompat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.Model;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -26,12 +27,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 将基岩版实体模型文件读取为 Java 版的 net.minecraft.client.model.Model 模型，此类和 AbstractBedrockEntityModel 一样
+ * 将基岩版实体模型文件读取为 Java 版的 net.minecraft.client.model.EntityModel 模型，此类和 AbstractBedrockModel 一样
  * <p>
  * 但由于 net.minecraft.client.model.EntityModel 和 net.minecraft.client.model.Model 是继承关系，无法复用，故重复代码
  */
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractBedrockModel extends Model {
+public abstract class AbstractBedrockEntityModel<T extends Entity> extends EntityModel<T> {
     /**
      * 存储 BedrockPart 的 HashMap
      */
@@ -49,7 +50,7 @@ public abstract class AbstractBedrockModel extends Model {
      */
     protected AABB renderBoundingBox;
 
-    public AbstractBedrockModel(InputStream stream) {
+    public AbstractBedrockEntityModel(InputStream stream) {
         super(RenderType::entityCutoutNoCull);
         BedrockModelPOJO pojo = BedrockModelUtil.GSON.fromJson(new InputStreamReader(stream, StandardCharsets.UTF_8), BedrockModelPOJO.class);
         if (BedrockVersion.isLegacyVersion(pojo)) {
@@ -60,7 +61,7 @@ public abstract class AbstractBedrockModel extends Model {
         }
     }
 
-    public AbstractBedrockModel(BedrockModelPOJO pojo, BedrockVersion version) {
+    public AbstractBedrockEntityModel(BedrockModelPOJO pojo, BedrockVersion version) {
         super(RenderType::entityCutoutNoCull);
         if (version == BedrockVersion.LEGACY) {
             loadLegacyModel(pojo);
@@ -70,7 +71,7 @@ public abstract class AbstractBedrockModel extends Model {
         }
     }
 
-    public AbstractBedrockModel() {
+    public AbstractBedrockEntityModel() {
         super(RenderType::entityCutoutNoCull);
         renderBoundingBox = new AABB(-1, 0, -1, 1, 2, 1);
     }
