@@ -24,8 +24,8 @@ public class BedrockCubeBox implements BedrockCube {
             {3, 2, 7, 6},
             {2, 1, 7, 8},
             {5, 4, 7, 8},
-            {4, 2, 7, 8},
-            {1, 0, 7, 8}
+            {1, 0, 7, 8},
+            {4, 2, 7, 8}
     };
     protected final float width;
     protected final float height;
