@@ -36,6 +36,7 @@ public class BedrockEntityModelSet<T extends AbstractBedrockEntityModel<? extend
             ResourceLocation path = new ResourceLocation(location.getNamespace(), "models/" + location.getPath() + ".json");
             Function<InputStream, T> modelFunction = knowLocations.get(location);
             manager.getResource(path).ifPresentOrElse(model -> {
+                SimpleBedrockModel.LOGGER.info("Loading bedrock model file: {}", path);
                 try (InputStream stream = model.open()) {
                     this.models.put(location, modelFunction.apply(stream));
                 } catch (IOException e) {
