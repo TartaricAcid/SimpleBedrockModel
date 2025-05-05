@@ -52,7 +52,6 @@ public class BedrockPart {
         if (this.visible) {
             if (!this.cubes.isEmpty() || !this.children.isEmpty()) {
                 poseStack.pushPose();
-                poseStack.translate(this.offsetX, this.offsetY, this.offsetZ);
                 this.translateAndRotate(poseStack);
                 this.compile(poseStack.last(), consumer, texU, texV, red, green, blue, alpha);
 
@@ -66,7 +65,7 @@ public class BedrockPart {
     }
 
     public void translateAndRotate(PoseStack poseStack) {
-        poseStack.translate((this.x / 16.0F), (this.y / 16.0F), (this.z / 16.0F));
+        poseStack.translate((this.x / 16.0F) + this.offsetX, (this.y / 16.0F) + this.offsetY, (this.z / 16.0F) + this.offsetZ);
         if (this.xRot != 0.0F || this.yRot != 0.0F || this.zRot != 0.0F) {
             poseStack.last().pose().rotateZYX(this.zRot, this.yRot, this.xRot);
             poseStack.last().normal().rotateZYX(this.zRot, this.yRot, this.xRot);
