@@ -10,9 +10,8 @@ import com.github.tartaricacid.simplebedrockmodel.client.compat.sodium.SodiumBed
 import com.github.tartaricacid.simplebedrockmodel.client.compat.sodium.SodiumCompat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -26,8 +25,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * 将基岩版实体模型文件读取为 Java 版的 net.minecraft.client.model.Model 模型，此类和 AbstractBedrockEntityModel 一样
+ * <p>
+ * 但由于 net.minecraft.client.model.EntityModel 和 net.minecraft.client.model.Model 是继承关系，无法复用，故重复代码
+ */
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractBedrockModel<T extends Entity> extends EntityModel<T> {
+public abstract class AbstractBedrockModel extends Model {
     /**
      * 存储 BedrockPart 的 HashMap
      */

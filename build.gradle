@@ -70,7 +70,13 @@ dependencies {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
-var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+tasks.compileJava {
+    // dsx137: 强制重新编译和生成 refmap.json 文件，避免偶发情况下该文件丢失问题
+    outputs.upToDateWhen { false }
+}
+
+// 用于 neoforge.mods 里替换那一堆 ${xxxx}
+tasks.withType(ProcessResources).configureEach {
     var replaceProperties = [
             minecraft_version      : minecraft_version,
             minecraft_version_range: minecraft_version_range,
@@ -85,17 +91,37 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_description        : mod_description
     ]
     inputs.properties replaceProperties
-    expand replaceProperties
-    from "src/main/templates"
-    into "build/generated/sources/modMetadata"
+
+    filesMatching(['META-INF/neoforge.mods.toml']) {
+        expand replaceProperties
+    }
 }
 
-sourceSets.main.resources.srcDir generateModMetadata
-neoForge.ideSyncTask generateModMetadata
+// 生成 manifest 内容，用于填充版本信息等内容
+jar {
+    manifest {
+        attributes([
+                "Implementation-Title"  : project.name,
+                "Implementation-Version": "${version}"
+        ])
+    }
+}
 
+// 必须，编码需要显式指定为 UTF
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+// 让 idea 主动下载前置库的源码和 Javadoc
+// 新版本 idea 默认不会下载这两个，这虽然加快了构建速度，但是不方便调试
 idea {
     module {
         downloadSources = true
         downloadJavadoc = true
     }
+}
+
+java {
+    // 编译源码文件，方便发布 maven
+    withSourcesJar()
 }

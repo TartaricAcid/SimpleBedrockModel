@@ -16,8 +16,8 @@ public class BedrockCubeBox implements BedrockCube {
             {2, 3, 7, 6},
             {1, 2, 7, 8},
             {4, 5, 7, 8},
+            {0, 1, 7, 8},
             {2, 4, 7, 8},
-            {0, 1, 7, 8}
     };
     protected static final int[][] UV_ORDER_MIRRORED = new int[][]{
             {2, 1, 6, 7},
@@ -25,7 +25,7 @@ public class BedrockCubeBox implements BedrockCube {
             {2, 1, 7, 8},
             {5, 4, 7, 8},
             {4, 2, 7, 8},
-            {1, 0, 7, 8}
+            {1, 0, 7, 8},
     };
     protected final float width;
     protected final float height;
@@ -43,17 +43,10 @@ public class BedrockCubeBox implements BedrockCube {
     }
 
     public BedrockCubeBox(float texOffX, float texOffY, float x, float y, float z, float width, float height, float depth, float delta, boolean mirror, float texWidth, float texHeight) {
-        float cubeWidth = (width + delta * 2) / 16.0f;
-        float cubeX = (x - delta) / 16.0f;
-        if (mirror) {
-            this.x = cubeX + cubeWidth;
-            this.width = -cubeWidth;
-        } else {
-            this.x = cubeX;
-            this.width = cubeWidth;
-        }
+        this.x = (x - delta) / 16.0f;
         this.y = (y - delta) / 16.0f;
         this.z = (z - delta) / 16.0f;
+        this.width = (width + delta * 2) / 16.0f;
         this.height = (height + delta * 2) / 16.0f;
         this.depth = (depth + delta * 2) / 16.0f;
 
