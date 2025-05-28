@@ -6,6 +6,7 @@ import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockCu
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.model.BedrockPart;
 import com.github.tartaricacid.simplebedrockmodel.client.bedrock.pojo.*;
 import com.github.tartaricacid.simplebedrockmodel.client.compat.embeddium.EmbeddiumBedrockCubeBox;
+import com.github.tartaricacid.simplebedrockmodel.client.compat.embeddium.EmbeddiumBedrockCubePerFace;
 import com.github.tartaricacid.simplebedrockmodel.client.compat.embeddium.EmbeddiumCompat;
 import com.github.tartaricacid.simplebedrockmodel.client.compat.sodium.SodiumBedrockCubeBox;
 import com.github.tartaricacid.simplebedrockmodel.client.compat.sodium.SodiumBedrockCubePerFace;
@@ -278,7 +279,7 @@ public abstract class AbstractBedrockEntityModel<T extends Entity> extends Entit
             return new SodiumBedrockCubePerFace(x, y, z, width, height, depth, delta, texWidth, texHeight, faces);
         }
         if (EmbeddiumCompat.isEmbeddiumInstalled()) {
-            return new SodiumBedrockCubePerFace(x, y, z, width, height, depth, delta, texWidth, texHeight, faces);
+            return new EmbeddiumBedrockCubePerFace(x, y, z, width, height, depth, delta, texWidth, texHeight, faces);
         }
         return new BedrockCubePerFace(x, y, z, width, height, depth, delta, texWidth, texHeight, faces);
     }
