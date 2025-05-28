@@ -20,9 +20,4 @@ public class BedrockEntityModelRegisterEvent<T extends AbstractBedrockEntityMode
     public void register(ResourceLocation location, Function<InputStream, T> function) {
         this.modelSet.addModel(location, function);
     }
-
-    @Override
-    public boolean isCanceled() {
-        return false;
-    }
 }
