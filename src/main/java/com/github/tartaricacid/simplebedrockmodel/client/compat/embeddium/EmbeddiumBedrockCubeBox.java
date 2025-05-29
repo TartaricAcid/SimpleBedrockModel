@@ -45,6 +45,7 @@ public class EmbeddiumBedrockCubeBox extends BedrockCubeBox implements IEmbeddiu
             emitVertex(ptr, VERTICES[VERTEX_ORDER[i][3]].x, VERTICES[VERTEX_ORDER[i][3]].y, VERTICES[VERTEX_ORDER[i][3]].z,
                     color, uvs[uvOrder[i][1]], uvs[uvOrder[i][3]], texV, texU, NORMALS[i]);
             ptr += STRIDE;
+            vertexCount += 4;
         }
 
         flush(writer, vertexCount);

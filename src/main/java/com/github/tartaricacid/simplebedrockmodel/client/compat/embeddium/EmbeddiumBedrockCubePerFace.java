@@ -46,6 +46,7 @@ public class EmbeddiumBedrockCubePerFace extends BedrockCubePerFace implements I
             emitVertex(ptr, VERTICES[VERTEX_ORDER[i][3]].x, VERTICES[VERTEX_ORDER[i][3]].y, VERTICES[VERTEX_ORDER[i][3]].z,
                     color, uvs[i][1], uvs[i][3], texV, texU, NORMALS[i]);
             ptr += STRIDE;
+            vertexCount += 4;
         }
 
         flush(writer, vertexCount);
