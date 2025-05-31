@@ -122,7 +122,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-            artifactId = this.mod_id
+            artifactId = this.archivesBaseName
             pom {
                 name = this.mod_name
                 description = this.mod_description
