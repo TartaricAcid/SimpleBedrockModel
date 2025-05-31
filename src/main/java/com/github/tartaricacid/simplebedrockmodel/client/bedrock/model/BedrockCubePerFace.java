@@ -41,8 +41,18 @@ public class BedrockCubePerFace implements BedrockCube {
         }
     }
 
+    private static boolean equalZero(float[] uvSize) {
+        return Math.abs(uvSize[0]) < 1e-9 && Math.abs(uvSize[1]) < 1e-9;
+    }
+
     private void fillUV(Direction direction, FaceUVsItem faces, float texWidth, float texHeight) {
         FaceItem face = faces.getFace(direction);
+        if (face == null) {
+            return;
+        }
+        if (equalZero(face.getUvSize())) {
+            return;
+        }
         uvs[direction.ordinal()][0] = face.getUv()[0] / texWidth;
         uvs[direction.ordinal()][1] = (face.getUv()[0] + face.getUvSize()[0]) / texWidth;
         uvs[direction.ordinal()][2] = face.getUv()[1] / texHeight;

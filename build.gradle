@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
     id 'idea'
     id 'net.neoforged.moddev' version '2.0.80'
+    id 'maven-publish'
 }
 
 version = mod_version
@@ -110,6 +111,42 @@ jar {
 // 必须，编码需要显式指定为 UTF
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+// 禁用生成 module metadata 的任务
+tasks.withType(GenerateModuleMetadata).configureEach {
+    enabled = false
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifactId = this.archivesBaseName
+            pom {
+                name = this.mod_name
+                description = this.mod_description
+                url = "https://github.com/TartaricAcid/SimpleBedrockModel"
+                licenses {
+                    license {
+                        name = this.mod_license
+                        url = "https://github.com/TartaricAcid/SimpleBedrockModel/blob/main/LICENSE"
+                    }
+                }
+                withXml {
+                    def node = asNode()
+                    def deps = node.dependencies
+                    if (deps != null) {
+                        node.remove(deps)
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url = uri("https://jitpack.io")
+        }
+    }
 }
 
 // 让 idea 主动下载前置库的源码和 Javadoc
