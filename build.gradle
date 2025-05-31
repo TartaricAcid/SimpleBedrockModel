@@ -3,6 +3,7 @@ plugins {
     id 'idea'
     id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'maven-publish'
 }
 
 group = mod_group_id
@@ -67,7 +68,6 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     runtimeOnly fg.deobf("maven.modrinth:embeddium:0.3.31+mc1.20.1")
     compileOnly fg.deobf("maven.modrinth:embeddium:0.3.31+mc1.20.1")
-    implementation fg.deobf("libs:touhoulittlemaid:1.20.1-release-1.2.2")
 }
 
 tasks.named('processResources', ProcessResources).configure {
@@ -107,4 +107,45 @@ tasks.named('jar', Jar).configure {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+// 禁用生成 module metadata 的任务
+tasks.withType(GenerateModuleMetadata).configureEach {
+    enabled = false
+}
+
+java {
+    // 编译源码文件，方便发布 maven
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifactId = this.mod_id
+            pom {
+                name = this.mod_name
+                description = this.mod_description
+                url = "https://github.com/TartaricAcid/SimpleBedrockModel"
+                licenses {
+                    license {
+                        name = this.mod_license
+                        url = "https://github.com/TartaricAcid/SimpleBedrockModel/blob/main/LICENSE"
+                    }
+                }
+                withXml {
+                    def node = asNode()
+                    def deps = node.dependencies
+                    if (deps != null) {
+                        node.remove(deps)
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url = uri("https://jitpack.io")
+        }
+    }
 }

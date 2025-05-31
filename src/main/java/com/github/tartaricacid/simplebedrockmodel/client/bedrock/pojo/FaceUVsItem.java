@@ -3,6 +3,8 @@ package com.github.tartaricacid.simplebedrockmodel.client.bedrock.pojo;
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.core.Direction;
 
+import javax.annotation.Nullable;
+
 public class FaceUVsItem {
     @SerializedName("down")
     private FaceItem down;
@@ -26,6 +28,7 @@ public class FaceUVsItem {
         this.west = west;
     }
 
+    @Nullable
     public FaceItem getFace(Direction direction) {
         return switch (direction) {
             case EAST -> west;
