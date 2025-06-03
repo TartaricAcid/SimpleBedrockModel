@@ -3,7 +3,6 @@ plugins {
     id 'maven-publish'
     id 'idea'
     id 'net.neoforged.moddev' version '2.0.80'
-    id 'maven-publish'
 }
 
 version = mod_version
