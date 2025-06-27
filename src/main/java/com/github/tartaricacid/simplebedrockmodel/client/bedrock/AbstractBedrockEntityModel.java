@@ -16,6 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,7 +33,7 @@ import java.util.List;
  * 但由于 net.minecraft.client.model.EntityModel 和 net.minecraft.client.model.Model 是继承关系，无法复用，故重复代码
  */
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractBedrockEntityModel<T extends Entity> extends EntityModel<T> {
+public abstract class AbstractBedrockEntityModel<T extends Entity> extends EntityModel<T> implements BedrockModelProvider<AbstractBedrockEntityModel<T>> {
     /**
      * 存储 BedrockPart 的 HashMap
      */
@@ -61,6 +62,10 @@ public abstract class AbstractBedrockEntityModel<T extends Entity> extends Entit
         }
     }
 
+    public AbstractBedrockEntityModel(BedrockModelPOJO pojo) throws InvalidVersionSpecificationException {
+        this(pojo, BedrockVersion.getVersion(pojo));
+    }
+
     public AbstractBedrockEntityModel(BedrockModelPOJO pojo, BedrockVersion version) {
         super(RenderType::entityCutoutNoCull);
         if (version == BedrockVersion.LEGACY) {
@@ -69,6 +74,11 @@ public abstract class AbstractBedrockEntityModel<T extends Entity> extends Entit
         if (version == BedrockVersion.NEW) {
             loadNewModel(pojo);
         }
+    }
+
+    @Override
+    public AbstractBedrockEntityModel<T> getModel() {
+        return this;
     }
 
     public AbstractBedrockEntityModel() {
@@ -283,10 +293,12 @@ public abstract class AbstractBedrockEntityModel<T extends Entity> extends Entit
         }
     }
 
+    @Override
     public AABB getRenderBoundingBox() {
         return renderBoundingBox;
     }
 
+    @Override
     public HashMap<String, BedrockPart> getModelMap() {
         return modelMap;
     }

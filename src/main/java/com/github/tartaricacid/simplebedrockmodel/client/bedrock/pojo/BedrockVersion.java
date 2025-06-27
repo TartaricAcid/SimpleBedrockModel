@@ -43,4 +43,12 @@ public enum BedrockVersion {
             throw new RuntimeException("Failed to parse spec", e);
         }
     }
+
+    public static BedrockVersion getVersion(BedrockModelPOJO pojo) throws InvalidVersionSpecificationException {
+        if (isNewVersion(pojo)) {
+            return NEW;
+        } else if (isLegacyVersion(pojo)) {
+            return LEGACY;
+        } else throw new InvalidVersionSpecificationException("Invalid version for model: " + pojo);
+    }
 }
