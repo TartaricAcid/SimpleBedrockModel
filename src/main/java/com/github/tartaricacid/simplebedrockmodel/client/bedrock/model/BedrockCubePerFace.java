@@ -74,22 +74,22 @@ public class BedrockCubePerFace implements BedrockCube {
     }
 
     @Override
-    public void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int texU, int texV, float r, float g, float b, float a) {
+    public void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int overlay, int lightmap, float r, float g, float b, float a) {
         Matrix4f matrix4f = pose.pose();
         prepareVertices(matrix4f);
 
         for (int i = 0; i < NUM_CUBE_FACES; i++) {
             consumer.vertex(VERTICES[VERTEX_ORDER[i][0]].x, VERTICES[VERTEX_ORDER[i][0]].y, VERTICES[VERTEX_ORDER[i][0]].z,
-                    r, g, b, a, uvs[i][1], uvs[i][2], texV, texU, normals[i].x, normals[i].y, normals[i].z);
+                    r, g, b, a, uvs[i][1], uvs[i][2], overlay, lightmap, normals[i].x, normals[i].y, normals[i].z);
 
             consumer.vertex(VERTICES[VERTEX_ORDER[i][1]].x, VERTICES[VERTEX_ORDER[i][1]].y, VERTICES[VERTEX_ORDER[i][1]].z,
-                    r, g, b, a, uvs[i][0], uvs[i][2], texV, texU, normals[i].x, normals[i].y, normals[i].z);
+                    r, g, b, a, uvs[i][0], uvs[i][2], overlay, lightmap, normals[i].x, normals[i].y, normals[i].z);
 
             consumer.vertex(VERTICES[VERTEX_ORDER[i][2]].x, VERTICES[VERTEX_ORDER[i][2]].y, VERTICES[VERTEX_ORDER[i][2]].z,
-                    r, g, b, a, uvs[i][0], uvs[i][3], texV, texU, normals[i].x, normals[i].y, normals[i].z);
+                    r, g, b, a, uvs[i][0], uvs[i][3], overlay, lightmap, normals[i].x, normals[i].y, normals[i].z);
 
             consumer.vertex(VERTICES[VERTEX_ORDER[i][3]].x, VERTICES[VERTEX_ORDER[i][3]].y, VERTICES[VERTEX_ORDER[i][3]].z,
-                    r, g, b, a, uvs[i][1], uvs[i][3], texV, texU, normals[i].x, normals[i].y, normals[i].z);
+                    r, g, b, a, uvs[i][1], uvs[i][3], overlay, lightmap, normals[i].x, normals[i].y, normals[i].z);
         }
     }
 }

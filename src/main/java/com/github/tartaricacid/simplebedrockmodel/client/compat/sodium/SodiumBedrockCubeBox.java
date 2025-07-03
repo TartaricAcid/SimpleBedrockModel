@@ -14,10 +14,10 @@ public class SodiumBedrockCubeBox extends BedrockCubeBox implements ISodiumVerte
     }
 
     @Override
-    public void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int texU, int texV, float r, float g, float b, float a) {
+    public void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int overlay, int lightmap, float r, float g, float b, float a) {
         VertexBufferWriter writer = VertexConsumerUtils.convertOrLog(consumer);
         if (writer == null) {
-            super.compile(pose, normals, consumer, texU, texV, r, g, b, a);
+            super.compile(pose, normals, consumer, overlay, lightmap, r, g, b, a);
             return;
         }
 
@@ -31,19 +31,19 @@ public class SodiumBedrockCubeBox extends BedrockCubeBox implements ISodiumVerte
 
         for (int i = 0; i < NUM_CUBE_FACES; i++) {
             emitVertex(ptr, VERTICES[VERTEX_ORDER[i][0]].x, VERTICES[VERTEX_ORDER[i][0]].y, VERTICES[VERTEX_ORDER[i][0]].z,
-                    color, uvs[uvOrder[i][1]], uvs[uvOrder[i][2]], texV, texU, NORMALS[i]);
+                    color, uvs[uvOrder[i][1]], uvs[uvOrder[i][2]], overlay, lightmap, NORMALS[i]);
             ptr += STRIDE;
 
             emitVertex(ptr, VERTICES[VERTEX_ORDER[i][1]].x, VERTICES[VERTEX_ORDER[i][1]].y, VERTICES[VERTEX_ORDER[i][1]].z,
-                    color, uvs[uvOrder[i][0]], uvs[uvOrder[i][2]], texV, texU, NORMALS[i]);
+                    color, uvs[uvOrder[i][0]], uvs[uvOrder[i][2]], overlay, lightmap, NORMALS[i]);
             ptr += STRIDE;
 
             emitVertex(ptr, VERTICES[VERTEX_ORDER[i][2]].x, VERTICES[VERTEX_ORDER[i][2]].y, VERTICES[VERTEX_ORDER[i][2]].z,
-                    color, uvs[uvOrder[i][0]], uvs[uvOrder[i][3]], texV, texU, NORMALS[i]);
+                    color, uvs[uvOrder[i][0]], uvs[uvOrder[i][3]], overlay, lightmap, NORMALS[i]);
             ptr += STRIDE;
 
             emitVertex(ptr, VERTICES[VERTEX_ORDER[i][3]].x, VERTICES[VERTEX_ORDER[i][3]].y, VERTICES[VERTEX_ORDER[i][3]].z,
-                    color, uvs[uvOrder[i][1]], uvs[uvOrder[i][3]], texV, texU, NORMALS[i]);
+                    color, uvs[uvOrder[i][1]], uvs[uvOrder[i][3]], overlay, lightmap, NORMALS[i]);
             ptr += STRIDE;
             vertexCount += 4;
         }

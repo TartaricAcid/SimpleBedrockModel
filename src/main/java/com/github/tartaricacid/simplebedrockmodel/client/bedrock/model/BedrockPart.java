@@ -43,19 +43,19 @@ public class BedrockPart {
         this.z = z;
     }
 
-    public void render(PoseStack poseStack, VertexConsumer consumer, int texU, int texV) {
-        this.render(poseStack, consumer, texU, texV, 1.0F, 1.0F, 1.0F, 1.0F);
+    public void render(PoseStack poseStack, VertexConsumer consumer, int overlay, int lightmap) {
+        this.render(poseStack, consumer, overlay, lightmap, 1.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    public void render(PoseStack poseStack, VertexConsumer consumer, int texU, int texV, float red, float green, float blue, float alpha) {
+    public void render(PoseStack poseStack, VertexConsumer consumer, int overlay, int lightmap, float red, float green, float blue, float alpha) {
         if (this.visible) {
             if (!this.cubes.isEmpty() || !this.children.isEmpty()) {
                 poseStack.pushPose();
                 this.translateAndRotate(poseStack);
-                this.compile(poseStack.last(), consumer, texU, texV, red, green, blue, alpha);
+                this.compile(poseStack.last(), consumer, overlay, lightmap, red, green, blue, alpha);
 
                 for (BedrockPart part : this.children) {
-                    part.render(poseStack, consumer, texU, texV, red, green, blue, alpha);
+                    part.render(poseStack, consumer, overlay, lightmap, red, green, blue, alpha);
                 }
 
                 poseStack.popPose();
@@ -71,7 +71,7 @@ public class BedrockPart {
         }
     }
 
-    private void compile(PoseStack.Pose pose, VertexConsumer consumer, int texU, int texV, float red, float green, float blue, float alpha) {
+    private void compile(PoseStack.Pose pose, VertexConsumer consumer, int overlay, int lightmap, float red, float green, float blue, float alpha) {
         Matrix3f normal = pose.normal();
         NORMALS[0].set(-normal.m10, -normal.m11, -normal.m12);
         NORMALS[1].set(normal.m10, normal.m11, normal.m12);
@@ -80,7 +80,7 @@ public class BedrockPart {
         NORMALS[4].set(-normal.m00, -normal.m01, -normal.m02);
         NORMALS[5].set(normal.m00, normal.m01, normal.m02);
         for (BedrockCube bedrockCube : this.cubes) {
-            bedrockCube.compile(pose, NORMALS, consumer, texU, texV, red, green, blue, alpha);
+            bedrockCube.compile(pose, NORMALS, consumer, overlay, lightmap, red, green, blue, alpha);
         }
     }
 
