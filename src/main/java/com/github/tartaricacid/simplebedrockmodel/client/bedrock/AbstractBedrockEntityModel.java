@@ -76,11 +76,6 @@ public abstract class AbstractBedrockEntityModel<T extends Entity> extends Entit
         }
     }
 
-    @Override
-    public AbstractBedrockEntityModel<T> getModel() {
-        return this;
-    }
-
     public AbstractBedrockEntityModel() {
         super(RenderType::entityCutoutNoCull);
         renderBoundingBox = new AABB(-1, 0, -1, 1, 2, 1);

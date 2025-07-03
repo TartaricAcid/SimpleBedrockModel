@@ -80,11 +80,6 @@ public abstract class AbstractBedrockModel extends Model implements BedrockModel
         renderBoundingBox = new AABB(-1, 0, -1, 1, 2, 1);
     }
 
-    @Override
-    public AbstractBedrockModel getModel() {
-        return this;
-    }
-
     protected void loadNewModel(BedrockModelPOJO pojo) {
         assert pojo.getGeometryModelNew() != null;
         pojo.getGeometryModelNew().deco();
@@ -292,10 +287,12 @@ public abstract class AbstractBedrockModel extends Model implements BedrockModel
         }
     }
 
+    @Override
     public AABB getRenderBoundingBox() {
         return renderBoundingBox;
     }
 
+    @Override
     public HashMap<String, BedrockPart> getModelMap() {
         return modelMap;
     }

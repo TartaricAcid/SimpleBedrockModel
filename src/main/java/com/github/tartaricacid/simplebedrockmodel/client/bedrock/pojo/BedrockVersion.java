@@ -49,6 +49,7 @@ public enum BedrockVersion {
             return NEW;
         } else if (isLegacyVersion(pojo)) {
             return LEGACY;
-        } else throw new InvalidVersionSpecificationException("Invalid version for model: " + pojo);
+        }
+        throw new InvalidVersionSpecificationException("Invalid version for model: " + pojo);
     }
 }
