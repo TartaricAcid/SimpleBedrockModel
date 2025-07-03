@@ -2,7 +2,6 @@ package com.github.tartaricacid.simplebedrockmodel.client.bedrock.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraftforge.api.distmarker.Dist;
