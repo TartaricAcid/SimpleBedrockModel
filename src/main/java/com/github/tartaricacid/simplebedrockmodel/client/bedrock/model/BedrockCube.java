@@ -30,12 +30,12 @@ public interface BedrockCube {
      *
      * @param pose     the current pose of the rendering context
      * @param consumer the vertex consumer to which the compiled vertices are added
-     * @param texU     the U coordinate for texture mapping
-     * @param texV     the V coordinate for texture mapping
+     * @param lightmap the lightmap coordinates (usually 0xF000F0 for full brightness)
+     * @param overlay  the overlay color (usually 0x00F000F0 for no overlay)
      * @param red      the red color component (0.0 to 1.0)
      * @param green    the green color component (0.0 to 1.0)
      * @param blue     the blue color component (0.0 to 1.0)
      * @param alpha    the alpha (transparency) component (0.0 to 1.0)
      */
-    void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int texU, int texV, float red, float green, float blue, float alpha);
+    void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int lightmap, int overlay, float red, float green, float blue, float alpha);
 }

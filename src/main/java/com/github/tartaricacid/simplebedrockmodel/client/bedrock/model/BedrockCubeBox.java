@@ -86,26 +86,26 @@ public class BedrockCubeBox implements BedrockCube {
     }
 
     @Override
-    public void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int texU, int texV, float r, float g, float b, float a) {
+    public void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int lightmap, int overlay, float r, float g, float b, float a) {
         Matrix4f matrix4f = pose.pose();
         prepareVertices(matrix4f);
 
         for (int i = 0; i < NUM_CUBE_FACES; i++) {
             consumer.addVertex(VERTICES[VERTEX_ORDER[i][0]].x, VERTICES[VERTEX_ORDER[i][0]].y, VERTICES[VERTEX_ORDER[i][0]].z)
                     .setColor(r, g, b, a).setUv(uvs[uvOrder[i][1]], uvs[uvOrder[i][2]])
-                    .setOverlay(texV).setLight(texU).setNormal(normals[i].x, normals[i].y, normals[i].z);
+                    .setOverlay(overlay).setLight(lightmap).setNormal(normals[i].x, normals[i].y, normals[i].z);
 
             consumer.addVertex(VERTICES[VERTEX_ORDER[i][1]].x, VERTICES[VERTEX_ORDER[i][1]].y, VERTICES[VERTEX_ORDER[i][1]].z)
                     .setColor(r, g, b, a).setUv(uvs[uvOrder[i][0]], uvs[uvOrder[i][2]])
-                    .setOverlay(texV).setLight(texU).setNormal(normals[i].x, normals[i].y, normals[i].z);
+                    .setOverlay(overlay).setLight(lightmap).setNormal(normals[i].x, normals[i].y, normals[i].z);
 
             consumer.addVertex(VERTICES[VERTEX_ORDER[i][2]].x, VERTICES[VERTEX_ORDER[i][2]].y, VERTICES[VERTEX_ORDER[i][2]].z)
                     .setColor(r, g, b, a).setUv(uvs[uvOrder[i][0]], uvs[uvOrder[i][3]])
-                    .setOverlay(texV).setLight(texU).setNormal(normals[i].x, normals[i].y, normals[i].z);
+                    .setOverlay(overlay).setLight(lightmap).setNormal(normals[i].x, normals[i].y, normals[i].z);
 
             consumer.addVertex(VERTICES[VERTEX_ORDER[i][3]].x, VERTICES[VERTEX_ORDER[i][3]].y, VERTICES[VERTEX_ORDER[i][3]].z)
                     .setColor(r, g, b, a).setUv(uvs[uvOrder[i][1]], uvs[uvOrder[i][3]])
-                    .setOverlay(texV).setLight(texU).setNormal(normals[i].x, normals[i].y, normals[i].z);
+                    .setOverlay(overlay).setLight(lightmap).setNormal(normals[i].x, normals[i].y, normals[i].z);
         }
     }
 }
