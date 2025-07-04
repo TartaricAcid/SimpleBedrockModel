@@ -283,7 +283,7 @@ public abstract class AbstractBedrockModel extends Model implements BedrockModel
     @ParametersAreNonnullByDefault
     public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         for (BedrockPart model : shouldRender) {
-            model.render(poseStack, buffer, packedOverlay, packedLight);
+            model.render(poseStack, buffer, packedLight, packedOverlay);
         }
     }
 

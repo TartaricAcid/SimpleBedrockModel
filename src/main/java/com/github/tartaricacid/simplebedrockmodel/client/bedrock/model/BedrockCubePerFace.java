@@ -74,7 +74,7 @@ public class BedrockCubePerFace implements BedrockCube {
     }
 
     @Override
-    public void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int overlay, int lightmap, float r, float g, float b, float a) {
+    public void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int lightmap, int overlay, float r, float g, float b, float a) {
         Matrix4f matrix4f = pose.pose();
         prepareVertices(matrix4f);
 

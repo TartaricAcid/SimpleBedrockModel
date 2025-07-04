@@ -22,14 +22,14 @@ public class BedrockPart {
     public final ObjectList<BedrockCube> cubes = new ObjectArrayList<>();
     public final ObjectList<BedrockPart> children = new ObjectArrayList<>();
 
-    public float x, y, z = 0;
+    public float x = 0, y = 0, z = 0;
     /**
      * 用来记录 BedrockPart 初始旋转角度，用于动画状态重置
      */
-    public float initRotX, initRotY, initRotZ = 0;
-    public float xRot, yRot, zRot = 0;
-    public float offsetX, offsetY, offsetZ = 0;
-    public float xScale, yScale, zScale = 1;
+    public float initRotX = 0, initRotY = 0, initRotZ = 0;
+    public float xRot = 0, yRot = 0, zRot = 0;
+    public float offsetX = 0, offsetY = 0, offsetZ = 0;
+    public float xScale = 1, yScale = 1, zScale = 1;
     /**
      * 可能用于动画旋转的四元数
      * <p>
@@ -54,11 +54,11 @@ public class BedrockPart {
         this.z = z;
     }
 
-    public void render(PoseStack poseStack, VertexConsumer consumer, int overlay, int lightmap) {
-        this.render(poseStack, consumer, overlay, lightmap, 1.0F, 1.0F, 1.0F, 1.0F);
+    public void render(PoseStack poseStack, VertexConsumer consumer, int lightmap, int overlay) {
+        this.render(poseStack, consumer, lightmap, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    public void render(PoseStack poseStack, VertexConsumer consumer, int overlay, int lightmap, float red, float green, float blue, float alpha) {
+    public void render(PoseStack poseStack, VertexConsumer consumer, int lightmap, int overlay, float red, float green, float blue, float alpha) {
         int cubePackedLight = illuminated ? MAX_LIGHT_TEXTURE : lightmap;
         if (this.visible) {
             // 缩放过小时，直接退出渲染
@@ -72,10 +72,10 @@ public class BedrockPart {
             if (!this.cubes.isEmpty() || !this.children.isEmpty()) {
                 poseStack.pushPose();
                 this.translateAndRotateAndScale(poseStack);
-                this.compile(poseStack.last(), consumer, overlay, cubePackedLight, red, green, blue, alpha);
+                this.compile(poseStack.last(), consumer, cubePackedLight, overlay, red, green, blue, alpha);
 
                 for (BedrockPart part : this.children) {
-                    part.render(poseStack, consumer, overlay, cubePackedLight, red, green, blue, alpha);
+                    part.render(poseStack, consumer, cubePackedLight, overlay, red, green, blue, alpha);
                 }
 
                 poseStack.popPose();
@@ -102,7 +102,7 @@ public class BedrockPart {
         poseStack.scale(xScale, yScale, zScale);
     }
 
-    private void compile(PoseStack.Pose pose, VertexConsumer consumer, int overlay, int lightmap, float red, float green, float blue, float alpha) {
+    private void compile(PoseStack.Pose pose, VertexConsumer consumer, int lightmap, int overlay, float red, float green, float blue, float alpha) {
         Matrix3f normal = pose.normal();
         NORMALS[0].set(-normal.m10, -normal.m11, -normal.m12);
         NORMALS[1].set(normal.m10, normal.m11, normal.m12);
@@ -111,7 +111,7 @@ public class BedrockPart {
         NORMALS[4].set(-normal.m00, -normal.m01, -normal.m02);
         NORMALS[5].set(normal.m00, normal.m01, normal.m02);
         for (BedrockCube bedrockCube : this.cubes) {
-            bedrockCube.compile(pose, NORMALS, consumer, overlay, lightmap, red, green, blue, alpha);
+            bedrockCube.compile(pose, NORMALS, consumer, lightmap, overlay, red, green, blue, alpha);
         }
     }
 

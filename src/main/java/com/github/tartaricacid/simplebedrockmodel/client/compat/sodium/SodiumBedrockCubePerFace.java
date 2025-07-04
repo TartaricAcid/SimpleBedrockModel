@@ -15,10 +15,10 @@ public class SodiumBedrockCubePerFace extends BedrockCubePerFace implements ISod
     }
 
     @Override
-    public void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int overlay, int lightmap, float r, float g, float b, float a) {
+    public void compile(PoseStack.Pose pose, Vector3f[] normals, VertexConsumer consumer, int lightmap, int overlay, float r, float g, float b, float a) {
         VertexBufferWriter writer = VertexConsumerUtils.convertOrLog(consumer);
         if (writer == null) {
-            super.compile(pose, normals, consumer, overlay, lightmap, r, g, b, a);
+            super.compile(pose, normals, consumer, lightmap, overlay, r, g, b, a);
             return;
         }
 
