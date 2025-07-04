@@ -4,9 +4,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import java.util.Random;
@@ -14,22 +17,30 @@ import java.util.Random;
 @OnlyIn(Dist.CLIENT)
 public class BedrockPart {
     private static final Vector3f[] NORMALS = new Vector3f[6];
+    private static final int MAX_LIGHT_TEXTURE = LightTexture.pack(15, 15);
+
     public final ObjectList<BedrockCube> cubes = new ObjectArrayList<>();
-    private final ObjectList<BedrockPart> children = new ObjectArrayList<>();
-    public float x;
-    public float y;
-    public float z;
-    public float xRot;
-    public float yRot;
-    public float zRot;
-    public float offsetX;
-    public float offsetY;
-    public float offsetZ;
+    public final ObjectList<BedrockPart> children = new ObjectArrayList<>();
+
+    public float x, y, z = 0;
+    /**
+     * 用来记录 BedrockPart 初始旋转角度，用于动画状态重置
+     */
+    public float initRotX, initRotY, initRotZ = 0;
+    public float xRot, yRot, zRot = 0;
+    public float offsetX, offsetY, offsetZ = 0;
+    public float xScale, yScale, zScale = 1;
+    /**
+     * 可能用于动画旋转的四元数
+     * <p>
+     * BedrockPart 支持两套旋转方式：一种是欧拉角，一种是四元数
+     */
+    public Quaternionf additionalQuaternion = new Quaternionf(0, 0, 0, 1);
+
+    public @Nullable BedrockPart parent = null;
     public boolean visible = true;
-    public boolean mirror;
-    private float initRotX;
-    private float initRotY;
-    private float initRotZ;
+    public boolean illuminated = false;
+    public boolean mirror = false;
 
     static {
         for (int i = 0; i < NORMALS.length; i++) {
@@ -48,14 +59,23 @@ public class BedrockPart {
     }
 
     public void render(PoseStack poseStack, VertexConsumer consumer, int overlay, int lightmap, float red, float green, float blue, float alpha) {
+        int cubePackedLight = illuminated ? MAX_LIGHT_TEXTURE : lightmap;
         if (this.visible) {
+            // 缩放过小时，直接退出渲染
+            boolean xNearZero = -1E-5F < xScale && xScale < 1E-5F;
+            boolean yNearZero = -1E-5F < yScale && yScale < 1E-5F;
+            boolean zNearZero = -1E-5F < zScale && zScale < 1E-5F;
+            if ((xNearZero && yNearZero) || (xNearZero && zNearZero) || (yNearZero && zNearZero)) {
+                return;
+            }
+
             if (!this.cubes.isEmpty() || !this.children.isEmpty()) {
                 poseStack.pushPose();
-                this.translateAndRotate(poseStack);
-                this.compile(poseStack.last(), consumer, overlay, lightmap, red, green, blue, alpha);
+                this.translateAndRotateAndScale(poseStack);
+                this.compile(poseStack.last(), consumer, overlay, cubePackedLight, red, green, blue, alpha);
 
                 for (BedrockPart part : this.children) {
-                    part.render(poseStack, consumer, overlay, lightmap, red, green, blue, alpha);
+                    part.render(poseStack, consumer, overlay, cubePackedLight, red, green, blue, alpha);
                 }
 
                 poseStack.popPose();
@@ -63,12 +83,23 @@ public class BedrockPart {
         }
     }
 
+    /**
+     * 不带缩放的平移和旋转
+     */
+    @Deprecated
+    @SuppressWarnings("all")
     public void translateAndRotate(PoseStack poseStack) {
         poseStack.translate((this.x / 16.0F) + this.offsetX, (this.y / 16.0F) + this.offsetY, (this.z / 16.0F) + this.offsetZ);
         if (this.xRot != 0.0F || this.yRot != 0.0F || this.zRot != 0.0F) {
             poseStack.last().pose().rotateZYX(this.zRot, this.yRot, this.xRot);
             poseStack.last().normal().rotateZYX(this.zRot, this.yRot, this.xRot);
         }
+    }
+
+    public void translateAndRotateAndScale(PoseStack poseStack) {
+        translateAndRotate(poseStack);
+        poseStack.mulPose(additionalQuaternion);
+        poseStack.scale(xScale, yScale, zScale);
     }
 
     private void compile(PoseStack.Pose pose, VertexConsumer consumer, int overlay, int lightmap, float red, float green, float blue, float alpha) {
@@ -112,5 +143,11 @@ public class BedrockPart {
 
     public void addChild(BedrockPart model) {
         this.children.add(model);
+        model.parent = this;
+    }
+
+    @Nullable
+    public BedrockPart getParent() {
+        return parent;
     }
 }
